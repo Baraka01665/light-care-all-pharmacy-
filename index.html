@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Light Care all Pharmacy - Complete Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Login Page */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            font-size: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-box h2 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .login-box p {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Main App Layout */
+        .app-container {
+            display: none;
+        }
+
+        .app-container.active {
+            display: block;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .sidebar-header h3 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .nav-item {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #f5f5f5;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, #f0e6ff 0%, white 100%);
+            color: #667eea;
+            border-left-color: #667eea;
+        }
+
+        .nav-item .icon {
+            font-size: 22px;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            width: auto;
+            padding: 8px 16px;
+            background: #ff4757;
+            font-size: 14px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active-page {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        /* POS Styles */
+        .pos-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+            height: calc(100vh - 100px);
+        }
+
+        .drugs-grid {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .drugs-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .drug-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #e0e0e0;
+        }
+
+        .drug-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .cart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        /* Tables */
+        .data-table {
+            background: white;
+            border-radius: 12px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #666;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .prescription-item {
+            background: #f8f9fa;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+            .sidebar-header h3, .sidebar-header p, .nav-item span:not(.icon) {
+                display: none;
+            }
+            .main-content {
+                margin-left: 70px;
+            }
+            .pos-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <div class="logo">
+                <div class="logo-icon">🏥💊</div>
+                <h2>Light Care all Pharmacy</h2>
+                <p>Complete Healthcare Management System</p>
+            </div>
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="loginUsername" placeholder="Enter username">
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter password">
+            </div>
+            <div class="input-group">
+                <label>Role</label>
+                <select id="loginRole">
+                    <option value="manager">Manager</option>
+                    <option value="pharmacist">Pharmacist</option>
+                    <option value="cashier">Cashier</option>
+                    <option value="nurse">Nurse</option>
+                </select>
+            </div>
+            <button onclick="login()">Login to System</button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="appContainer" class="app-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3>🏥💊 Light CareBall</h3>
+                <p>Pharmacy Management System</p>
+            </div>
+            <div class="nav-item active" onclick="showPage('dashboard')">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item" onclick="showPage('pos')">
+                <span class="icon">🛒</span>
+                <span>Point of Sale</span>
+            </div>
+            <div class="nav-item" onclick="showPage('inventory')">
+                <span class="icon">💊</span>
+                <span>Inventory</span>
+            </div>
+            <div class="nav-item" onclick="showPage('patients')">
+                <span class="icon">👥</span>
+                <span>Patients</span>
+            </div>
+            <div class="nav-item" onclick="showPage('admissions')">
+                <span class="icon">🏥</span>
+                <span>Admissions</span>
+            </div>
+            <div class="nav-item" onclick="showPage('sales')">
+                <span class="icon">💰</span>
+                <span>Sales History</span>
+            </div>
+            <div class="nav-item" onclick="showPage('activities')">
+                <span class="icon">⏰</span>
+                <span>Login Activities</span>
+            </div>
+            <div class="nav-item" id="managerOnlyItems" style="display:none;" onclick="showPage('managerInventory')">
+                <span class="icon">⚙️</span>
+                <span>Manage Items</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="top-bar">
+                <h2 id="pageTitle">Dashboard</h2>
+                <div class="user-info">
+                    <span id="userNameDisplay">User</span>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="page active-page">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Today's Sales</h3>
+                        <div class="value" id="todaySales">KES 0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Patients</h3>
+                        <div class="value" id="activePatients">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Current Admissions</h3>
+                        <div class="value" id="currentAdmissions">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Low Stock Items</h3>
+                        <div class="value" id="lowStockCount">0</div>
+                    </div>
+                </div>
+                <div id="alertsContainer"></div>
+                <div class="data-table">
+                    <h3 style="padding: 20px;">Recent Sales</h3>
+                    <table id="recentSalesTable">
+                        <thead><tr><th>Receipt No</th><th>Amount</th><th>Date</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- POS Page -->
+            <div id="posPage" class="page">
+                <div class="pos-container">
+                    <div class="drugs-grid">
+                        <div class="search-box">
+                            <input type="text" id="drugSearch" placeholder="🔍 Search drugs by name or brand..." onkeyup="searchDrugs()">
+                        </div>
+                        <div class="drugs-list" id="drugsList"></div>
+                    </div>
+                    <div class="cart-container">
+                        <h3>🛒 Shopping Cart</h3>
+                        <div class="cart-items" id="cartItems"></div>
+                        <div class="cart-total" style="border-top: 2px solid #e0e0e0; padding-top: 15px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span>Subtotal:</span><span id="subtotal">KES 0</span></div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span>Tax (16%):</span><span id="tax">KES 0</span></div>
+                            <div style="display: flex; justify-content: space-between; font-size: 20px; font-weight: bold; color: #667eea; margin-top: 10px;"><span>Total:</span><span id="total">KES 0</span></div>
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label>Payment Method</label>
+                                <select id="paymentMethod">
+                                    <option value="cash">💵 Cash</option>
+                                    <option value="mpesa">📱 M-Pesa</option>
+                                    <option value="card">💳 Card</option>
+                                </select>
+                            </div>
+                            <button onclick="checkout()">Complete Sale</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Page -->
+            <div id="inventoryPage" class="page">
+                <div class="data-table">
+                    <table>
+                        <thead><tr><th>Brand Name</th><th>Generic Name</th><th>Stock</th><th>Price</th><th>Status</th></tr></thead>
+                        <tbody id="inventoryTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Patients Page -->
+            <div id="patientsPage" class="page">
+                <button onclick="openPatientModal()" style="width: auto; margin-bottom: 20px; padding: 10px 20px;">➕ Register New Patient</button>
+                <div class="data-table">
+                    <table>
+                        <thead><tr><th>Patient No</th><th>Name</th><th>Phone</th><th>Prescribed Drugs</th><th>Total Bill</th><th>Status</th><th>Action</th></tr></thead>
+                        <tbody id="patientsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Admissions Page -->
+            <div id="admissionsPage" class="page">
+                <div class="data-table">
+                    <table>
+                        <thead><tr><th>Patient</th><th>Admission Date</th><th>Room</th><th>Status</th><th>Action</th></tr></thead>
+                        <tbody id="admissionsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Sales Page -->
+            <div id="salesPage" class="page">
+                <div class="data-table">
+                    <table>
+                        <thead><tr><th>Receipt No</th><th>Cashier</th><th>Amount</th><th>Payment</th><th>Date</th></tr></thead>
+                        <tbody id="salesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Login Activities Page -->
+            <div id="activitiesPage" class="page">
+                <div class="data-table">
+                    <table>
+                        <thead><tr><th>User</th><th>Role</th><th>Login Time</th><th>Logout Time</th><th>Duration</th></tr></thead>
+                        <tbody id="activitiesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Manager Inventory Page -->
+            <div id="managerInventoryPage" class="page">
+                <button onclick="openAddDrugModal()" style="width: auto; margin-bottom: 20px; padding: 10px 20px;">➕ Add New Drug</button>
+                <div class="data-table">
+                    <table>
+                        <thead><tr><th>Brand Name</th><th>Generic Name</th><th>Stock</th><th>Price</th><th>Action</th></tr></thead>
+                        <tbody id="managerInventoryBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Registration Modal with Prescriptions -->
+    <div id="patientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <h3>📝 Register New Patient</h3>
+                <button onclick="closeModal('patientModal')" style="width: auto;">✕</button>
+            </div>
+            <div class="form-group"><label>First Name</label><input type="text" id="patientFirstName"></div>
+            <div class="form-group"><label>Last Name</label><input type="text" id="patientLastName"></div>
+            <div class="form-group"><label>Phone Number</label><input type="text" id="patientPhone"></div>
+            <div class="form-group"><label>Email</label><input type="email" id="patientEmail"></div>
+            <div class="form-group"><label>Address</label><textarea id="patientAddress" rows="2"></textarea></div>
+            
+            <h4 style="margin: 15px 0 10px 0;">💊 Prescribed Drugs</h4>
+            <div id="prescriptionsList"></div>
+            <button onclick="addPrescriptionField()" style="width: auto; margin-bottom: 15px; background: #28a745;">+ Add Drug</button>
+            
+            <div class="form-group"><label>Consultation Fee (KES)</label><input type="number" id="consultationFee" value="500"></div>
+            <button onclick="registerPatientWithPrescriptions()">Register Patient</button>
+        </div>
+    </div>
+
+    <script>
+        // ========== DATA STORAGE ==========
+        let currentUser = null;
+        let currentSessionId = null;
+        let drugs = [];
+        let patients = [];
+        let admissions = [];
+        let sales = [];
+        let loginActivities = [];
+        
+        // Load initial data
+        function loadData() {
+            const storedDrugs = localStorage.getItem('lightcareball_drugs');
+            if (storedDrugs) {
+                drugs = JSON.parse(storedDrugs);
+            } else {
+                drugs = [
+                    { id: 1, brand_name: 'Panadol', generic_name: 'Paracetamol', category: 'Painkiller', price: 100, stock: 150, expiry: '2025-12-31' },
+                    { id: 2, brand_name: 'Amoxil', generic_name: 'Amoxicillin', category: 'Antibiotic', price: 250, stock: 80, expiry: '2025-06-30' },
+                    { id: 3, brand_name: 'Zyrtec', generic_name: 'Cetirizine', category: 'Antihistamine', price: 150, stock: 200, expiry: '2025-08-15' },
+                    { id: 4, brand_name: 'Ventolin', generic_name: 'Salbutamol', category: 'Respiratory', price: 300, stock: 45, expiry: '2025-04-20' },
+                    { id: 5, brand_name: 'Brufen', generic_name: 'Ibuprofen', category: 'Painkiller', price: 180, stock: 120, expiry: '2025-10-10' },
+                    { id: 6, brand_name: 'Glucophage', generic_name: 'Metformin', category: 'Diabetes', price: 220, stock: 95, expiry: '2025-09-01' },
+                    { id: 7, brand_name: 'Lisinopril', generic_name: 'Lisinopril', category: 'Blood Pressure', price: 280, stock: 60, expiry: '2025-07-15' }
+                ];
+                saveDrugs();
+            }
+            
+            const storedPatients = localStorage.getItem('lightcareball_patients');
+            if (storedPatients) {
+                patients = JSON.parse(storedPatients);
+            } else {
+                patients = [];
+                savePatients();
+            }
+            
+            const storedAdmissions = localStorage.getItem('lightcareball_admissions');
+            if (storedAdmissions) {
+                admissions = JSON.parse(storedAdmissions);
+            } else {
+                admissions = [];
+                saveAdmissions();
+            }
+            
+            const storedSales = localStorage.getItem('lightcareball_sales');
+            if (storedSales) {
+                sales = JSON.parse(storedSales);
+            } else {
+                sales = [];
+                saveSales();
+            }
+            
+            const storedActivities = localStorage.getItem('lightcareball_activities');
+            if (storedActivities) {
+                loginActivities = JSON.parse(storedActivities);
+            } else {
+                loginActivities = [];
+                saveActivities();
+            }
+        }
+        
+        function saveDrugs() { localStorage.setItem('lightcareball_drugs', JSON.stringify(drugs)); }
+        function savePatients() { localStorage.setItem('lightcareball_patients', JSON.stringify(patients)); }
+        function saveAdmissions() { localStorage.setItem('lightcareball_admissions', JSON.stringify(admissions)); }
+        function saveSales() { localStorage.setItem('lightcareball_sales', JSON.stringify(sales)); }
+        function saveActivities() { localStorage.setItem('lightcareball_activities', JSON.stringify(loginActivities)); }
+        
+        // ========== AUTHENTICATION ==========
+        function login() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const role = document.getElementById('loginRole').value;
+            
+            if (!username || !password) {
+                alert('Please enter username and password');
+                return;
+            }
+            
+            currentUser = { username, role, full_name: username.charAt(0).toUpperCase() + username.slice(1) };
+            currentSessionId = Date.now();
+            
+            // Record login activity
+            const activity = {
+                id: currentSessionId,
+                user: currentUser.full_name,
+                role: role,
+                login_time: new Date().toISOString(),
+                logout_time: null,
+                duration: null
+            };
+            loginActivities.push(activity);
+            saveActivities();
+            
+            document.getElementById('userNameDisplay').innerHTML = `${currentUser.full_name} (${role})`;
+            
+            if (role === 'manager' || role === 'admin') {
+                document.getElementById('managerOnlyItems').style.display = 'flex';
+            } else {
+                document.getElementById('managerOnlyItems').style.display = 'none';
+            }
+            
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('appContainer').classList.add('active');
+            
+            loadData();
+            refreshAllData();
+            startAutoRefresh();
+        }
+        
+        function logout() {
+            // Update logout time
+            const activity = loginActivities.find(a => a.id === currentSessionId);
+            if (activity) {
+                activity.logout_time = new Date().toISOString();
+                const loginDate = new Date(activity.login_time);
+                const logoutDate = new Date(activity.logout_time);
+                const diffMinutes = Math.floor((logoutDate - loginDate) / 60000);
+                activity.duration = `${diffMinutes} minutes`;
+                saveActivities();
+            }
+            
+            currentUser = null;
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('appContainer').classList.remove('active');
+        }
+        
+        // ========== UI NAVIGATION ==========
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            document.getElementById(`${page}Page`).classList.add('active-page');
+            if (event && event.target) {
+                event.target.closest('.nav-item').classList.add('active');
+            }
+            
+            const titles = { 
+                dashboard: 'Dashboard', pos: 'Point of Sale', inventory: 'Inventory', 
+                patients: 'Patient Management', admissions: 'Admissions', sales: 'Sales History',
+                activities: 'User Login Activities', managerInventory: 'Manage Inventory'
+            };
+            document.getElementById('pageTitle').innerText = titles[page] || 'Dashboard';
+            
+            refreshAllData();
+        }
+        
+        // ========== PATIENT REGISTRATION WITH PRESCRIPTIONS ==========
+        let prescriptionFields = [];
+        
+        function addPrescriptionField() {
+            const index = prescriptionFields.length;
+            prescriptionFields.push({
+                drug_name: '',
+                dosage: '',
+                frequency: '',
+                duration: '',
+                quantity: 1,
+                price: 0
+            });
+            renderPrescriptionFields();
+        }
+        
+        function renderPrescriptionFields() {
+            const container = document.getElementById('prescriptionsList');
+            container.innerHTML = prescriptionFields.map((field, idx) => `
+                <div class="prescription-item">
+                    <h4>Drug ${idx + 1}</h4>
+                    <div class="form-group">
+                        <label>Drug Name</label>
+                        <input type="text" id="pres_drug_${idx}" placeholder="e.g., Panadol" value="${field.drug_name}" onchange="updatePrescription(${idx}, 'drug_name', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label>Dosage</label>
+                        <input type="text" id="pres_dosage_${idx}" placeholder="e.g., 500mg" value="${field.dosage}" onchange="updatePrescription(${idx}, 'dosage', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label>Frequency</label>
+                        <input type="text" id="pres_freq_${idx}" placeholder="e.g., Twice daily" value="${field.frequency}" onchange="updatePrescription(${idx}, 'frequency', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label>Duration (days)</label>
+                        <input type="number" id="pres_duration_${idx}" value="${field.duration}" onchange="updatePrescription(${idx}, 'duration', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" id="pres_qty_${idx}" value="${field.quantity}" onchange="updatePrescription(${idx}, 'quantity', parseInt(this.value))">
+                    </div>
+                    <div class="form-group">
+                        <label>Price per unit (KES)</label>
+                        <input type="number" id="pres_price_${idx}" value="${field.price}" onchange="updatePrescription(${idx}, 'price', parseFloat(this.value))">
+                    </div>
+                    <button onclick="removePrescriptionField(${idx})" style="width: auto; background: #dc3545;">Remove Drug</button>
+                </div>
+            `).join('');
+        }
+        
+        function updatePrescription(index, field, value) {
+            prescriptionFields[index][field] = value;
+        }
+        
+        function removePrescriptionField(index) {
+            prescriptionFields.splice(index, 1);
+            renderPrescriptionFields();
+        }
+        
+        function registerPatientWithPrescriptions() {
+            const firstName = document.getElementById('patientFirstName').value;
+            const lastName = document.getElementById('patientLastName').value;
+            const phone = document.getElementById('patientPhone').value;
+            const email = document.getElementById('patientEmail').value;
+            const address = document.getElementById('patientAddress').value;
+            const consultationFee = parseFloat(document.getElementById('consultationFee').value) || 0;
+            
+            if (!firstName || !lastName) {
+                alert('Please enter patient name');
+                return;
+            }
+            
+            // Calculate total drug cost
+            let drugTotal = 0;
+            const validPrescriptions = prescriptionFields.filter(p => p.drug_name && p.price > 0);
+            
+            for (const prescription of validPrescriptions) {
+                drugTotal += prescription.price * prescription.quantity;
+            }
+            
+            const totalBill = consultationFee + drugTotal;
+            
+            const patient = {
+                id: Date.now(),
+                patient_no: `LCP${Date.now()}`,
+                first_name: firstName,
+                last_name: lastName,
+                phone: phone,
+                email: email,
+                address: address,
+                prescriptions: validPrescriptions,
+                consultation_fee: consultationFee,
+                drug_total: drugTotal,
+                total_bill: totalBill,
+                registered_by: currentUser.full_name,
+                created_at: new Date().toISOString()
+            };
+            
+            patients.push(patient);
+            savePatients();
+            
+            // Update drug stock for prescribed drugs
+            for (const prescription of validPrescriptions) {
+                const drug = drugs.find(d => d.brand_name.toLowerCase() === prescription.drug_name.toLowerCase());
+                if (drug) {
+                    drug.stock -= prescription.quantity;
+                    if (drug.stock < 0) drug.stock = 0;
+                }
+            }
+            saveDrugs();
+            
+            refreshPatients();
+            closeModal('patientModal');
+            
+            // Clear form
+            document.getElementById('patientFirstName').value = '';
+            document.getElementById('patientLastName').value = '';
+            document.getElementById('patientPhone').value = '';
+            document.getElementById('patientEmail').value = '';
+            document.getElementById('patientAddress').value = '';
+            document.getElementById('consultationFee').value = '500';
+            prescriptionFields = [];
+            renderPrescriptionFields();
+            
+            alert(`Patient ${firstName} ${lastName} registered successfully!\nTotal Bill: KES ${totalBill.toLocaleString()}\n(Including consultation and prescribed drugs)`);
+            refreshAllData();
+        }
+        
+        function refreshPatients() {
+            const tbody = document.getElementById('patientsTableBody');
+            tbody.innerHTML = patients.map(patient => `
+                <tr>
+                    <td>${patient.patient_no}</td>
+                    <td>${patient.first_name} ${patient.last_name}</td>
+                    <td>${patient.phone || '-'}</td>
+                    <td>${patient.prescriptions.length} drug(s)</td>
+                    <td><strong>KES ${patient.total_bill.toLocaleString()}</strong></td>
+                    <td><span class="status-badge" style="background:#28a745;color:white;padding:4px 8px;border-radius:4px;">Active</span></td>
+                    <td><button onclick="viewPatientDetails(${patient.id})" style="width:auto;padding:5px 10px;">View Bill</button></td>
+                </tr>
+            `).join('');
+        }
+        
+        function viewPatientDetails(patientId) {
+            const patient = patients.find(p => p.id === patientId);
+            if (!patient) return;
+            
+            let prescriptionsHtml = '';
+            for (const drug of patient.prescriptions) {
+                prescriptionsHtml += `${drug.drug_name} - ${drug.dosage}, ${drug.frequency} for ${drug.duration} days (${drug.quantity} units x KES ${drug.price} = KES ${drug.price * drug.quantity})\n`;
+            }
+            
+            alert(`Patient: ${patient.first_name} ${patient.last_name}\nPatient No: ${patient.patient_no}\n\nPrescribed Drugs:\n${prescriptionsHtml || 'None'}\n\nConsultation Fee: KES ${patient.consultation_fee}\nDrug Total: KES ${patient.drug_total}\nTotal Bill: KES ${patient.total_bill}\n\nRegistered by: ${patient.registered_by}\nDate: ${new Date(patient.created_at).toLocaleString()}`);
+        }
+        
+        // ========== DASHBOARD ==========
+        function refreshDashboard() {
+            const today = new Date().toDateString();
+            const todaySales = sales.filter(s => new Date(s.date).toDateString() === today);
+            const todayTotal = todaySales.reduce((sum, s) => sum + s.final_amount, 0);
+            document.getElementById('todaySales').innerHTML = `KES ${todayTotal.toLocaleString()}`;
+            
+            const activePatients = patients.length;
+            document.getElementById('activePatients').innerText = activePatients;
+            
+            const currentAdmissions = admissions.filter(a => a.status === 'active').length;
+            document.getElementById('currentAdmissions').innerText = currentAdmissions;
+            
+            const lowStock = drugs.filter(d => d.stock < 50).length;
+            document.getElementById('lowStockCount').innerText = lowStock;
+            
+            // Alerts
+            const alertsContainer = document.getElementById('alertsContainer');
+            let alertsHtml = '';
+            const expiringSoon = drugs.filter(d => {
+                const expiryDate = new Date(d.expiry);
+                const daysUntil = (expiryDate - new Date()) / (1000 * 3600 * 24);
+                return daysUntil <= 30 && daysUntil > 0;
+            });
+            
+            if (expiringSoon.length > 0) {
+                alertsHtml += `<div class="alert alert-warning" style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:15px;margin-bottom:15px;">⚠️ ${expiringSoon.length} drug(s) expiring within 30 days</div>`;
+            }
+            
+            if (lowStock > 0) {
+                alertsHtml += `<div class="alert alert-danger" style="background:#f8d7da;border:1px solid #dc3545;border-radius:8px;padding:15px;margin-bottom:15px;">⚠️ ${lowStock} drug(s) below minimum stock level (50 units)</div>`;
+            }
+            
+            alertsContainer.innerHTML = alertsHtml;
+            
+            const recentSales = [...sales].reverse().slice(0, 10);
+            const tbody = document.querySelector('#recentSalesTable tbody');
+            tbody.innerHTML = recentSales.map(s => `
+                <tr><td>${s.receipt_no}</td><td>KES ${s.final_amount.toLocaleString()}</td><td>${new Date(s.date).toLocaleString()}</td></tr>
+            `).join('');
+        }
+        
+        // ========== POS FUNCTIONS ==========
+        function searchDrugs() {
+            const searchTerm = document.getElementById('drugSearch').value.toLowerCase();
+            const filtered = drugs.filter(d => 
+                d.brand_name.toLowerCase().includes(searchTerm) || 
+                d.generic_name.toLowerCase().includes(searchTerm)
+            );
+            displayDrugs(filtered);
+        }
+        
+        let cart = [];
+        
+        function displayDrugs(drugsToShow) {
+            const container = document.getElementById('drugsList');
+            container.innerHTML = drugsToShow.map(drug => `
+                <div class="drug-card" onclick="addToCart(${drug.id})">
+                    <h4>${drug.brand_name}</h4>
+                    <p>${drug.generic_name}</p>
+                    <div class="price" style="color:#667eea;font-size:18px;font-weight:bold;margin:10px 0;">KES ${drug.price}</div>
+                    <div class="stock" style="font-size:12px;color:#666;">Stock: ${drug.stock} units</div>
+                </div>
+            `).join('');
+        }
+        
+        function addToCart(drugId) {
+            const drug = drugs.find(d => d.id === drugId);
+            if (!drug) return;
+            
+            const existingItem = cart.find(item => item.drug_id === drugId);
+            if (existingItem) {
+                if (existingItem.quantity + 1 > drug.stock) {
+                    alert(`Only ${drug.stock} units available in stock`);
+                    return;
+                }
+                existingItem.quantity++;
+                existingItem.total = existingItem.quantity * existingItem.price;
+            } else {
+                if (drug.stock < 1) {
+                    alert('Out of stock');
+                    return;
+                }
+                cart.push({
+                    drug_id: drug.id,
+                    name: drug.brand_name,
+                    price: drug.price,
+                    quantity: 1,
+                    total: drug.price
+                });
+            }
+            updateCartDisplay();
+        }
+        
+        function updateCartDisplay() {
+            const container = document.getElementById('cartItems');
+            container.innerHTML = cart.map((item, index) => `
+                <div class="cart-item" style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid #e0e0e0;">
+                    <div>
+                        <h4 style="font-size:14px;">${item.name}</h4>
+                        <p style="font-size:12px;color:#666;">KES ${item.price} each</p>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <button onclick="updateCartQuantity(${index}, -1)" style="width:30px;">-</button>
+                        <input type="number" value="${item.quantity}" onchange="updateCartQuantity(${index}, 0, this.value)" style="width:60px;text-align:center;">
+                        <button onclick="updateCartQuantity(${index}, 1)" style="width:30px;">+</button>
+                        <button onclick="removeFromCart(${index})" style="width:30px;background:#dc3545;">×</button>
+                    </div>
+                    <div>KES ${item.total}</div>
+                </div>
+            `).join('');
+            
+            const subtotal = cart.reduce((sum, item) => sum + item.total, 0);
+            const tax = subtotal * 0.16;
+            const total = subtotal + tax;
+            
+            document.getElementById('subtotal').innerHTML = `KES ${subtotal.toLocaleString()}`;
+            document.getElementById('tax').innerHTML = `KES ${tax.toLocaleString()}`;
+            document.getElementById('total').innerHTML = `KES ${total.toLocaleString()}`;
+        }
+        
+        function updateCartQuantity(index, delta, newValue = null) {
+            let newQty = newValue !== null ? parseInt(newValue) : cart[index].quantity + delta;
+            if (isNaN(newQty) || newQty < 1) newQty = 1;
+            
+            const drug = drugs.find(d => d.id === cart[index].drug_id);
+            if (newQty > drug.stock) {
+                alert(`Only ${drug.stock} units available`);
+                newQty = drug.stock;
+            }
+            
+            cart[index].quantity = newQty;
+            cart[index].total = newQty * cart[index].price;
+            updateCartDisplay();
+        }
+        
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartDisplay();
+        }
+        
+        function checkout() {
+            if (cart.length === 0) {
+                alert('Cart is empty');
+                return;
+            }
+            
+            const subtotal = cart.reduce((sum, item) => sum + item.total, 0);
+            const tax = subtotal * 0.16;
+            const total = subtotal + tax;
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            
+            for (const item of cart) {
+                const drug = drugs.find(d => d.id === item.drug_id);
+                drug.stock -= item.quantity;
+            }
+            saveDrugs();
+            
+            const sale = {
+                id: Date.now(),
+                receipt_no: `LCP${Date.now()}`,
+                items: [...cart],
+                subtotal,
+                tax,
+                final_amount: total,
+                payment_method: paymentMethod,
+                date: new Date().toISOString(),
+                cashier: currentUser.full_name
+            };
+            sales.push(sale);
+            saveSales();
+            
+            alert(`✅ Sale Completed!\nReceipt: ${sale.receipt_no}\nTotal: KES ${total.toLocaleString()}\nPayment: ${paymentMethod}`);
+            
+            cart = [];
+            updateCartDisplay();
+            refreshAllData();
+            showPage('dashboard');
+        }
+        
+        // ========== INVENTORY ==========
+        function refreshInventory() {
+            const tbody = document.getElementById('inventoryTableBody');
+            tbody.innerHTML = drugs.map(drug => `
+                <tr>
+                    <td>${drug.brand_name}</td><td>${drug.generic_name}</td>
+                    <td>${drug.stock}</td><td>KES ${drug.price}</td>
+                    <td>${drug.stock < 50 ? '<span style="background:#ffc107;padding:4px 8px;border-radius:4px;">⚠️ Low Stock</span>' : 
+                         '<span style="background:#28a745;color:white;padding:4px 8px;border-radius:4px;">✓ In Stock</span>'}
+                    </td>
+                </tr>
+            `).join('');
+            
+            const managerBody = document.getElementById('managerInventoryBody');
+            if (managerBody) {
+                managerBody.innerHTML = drugs.map(drug => `
+                    <tr>
+                        <td>${drug.brand_name}</td><td>${drug.generic_name}</td>
+                        <td>${drug.stock}</td><td>KES ${drug.price}</td>
+                        <td><button onclick="openAddStockModal(${drug.id})" style="width:auto;padding:5px 10px;">➕ Add Stock</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+        
+        // ========== ADMISSIONS ==========
+        function refreshAdmissions() {
+            const tbody = document.getElementById('admissionsTableBody');
+            tbody.innerHTML = admissions.map(admission => `
+                <tr>
+                    <td>${admission.patient_name}</td>
+                    <td>${new Date(admission.admission_date).toLocaleString()}</td>
+                    <td>${admission.room_number} - ${admission.bed_number}</td>
+                    <td><span style="background:${admission.status === 'active' ? '#28a745' : '#6c757d'};color:white;padding:4px 8px;border-radius:4px;">${admission.status}</span></td>
+                    <td>${admission.status === 'active' ? `<button onclick="dischargePatient(${admission.id})" style="width:auto;padding:5px 10px;">🏥 Discharge</button>` : '-'}</td>
+                </tr>
+            `).join('');
+        }
+        
+        function dischargePatient(admissionId) {
+            if (confirm('Discharge this patient?')) {
+                const admission = admissions.find(a => a.id === admissionId);
+                if (admission) {
+                    admission.status = 'discharged';
+                    admission.discharge_date = new Date().toISOString();
+                    saveAdmissions();
+                    refreshAdmissions();
+                    refreshAllData();
+                    alert('Patient discharged successfully');
+                }
+            }
+        }
+        
+        // ========== SALES HISTORY ==========
+        function refreshSales() {
+            const tbody = document.getElementById('salesTableBody');
+            tbody.innerHTML = [...sales].reverse().map(sale => `
+                <tr>
+                    <td>${sale.receipt_no}</td><td>${sale.cashier}</td>
+                    <td>KES ${sale.final_amount.toLocaleString()}</td><td>${sale.payment_method}</td>
+                    <td>${new Date(sale.date).toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+        
+        // ========== LOGIN ACTIVITIES ==========
+        function refreshActivities() {
+            const tbody = document.getElementById('activitiesTableBody');
+            tbody.innerHTML = loginActivities.reverse().map(activity => `
+                <tr>
+                    <td>${activity.user}</td><td>${activity.role}</td>
+                    <td>${new Date(activity.login_time).toLocaleString()}</td>
+                    <td>${activity.logout_time ? new Date(activity.logout_time).toLocaleString() : 'Active'}</td>
+                    <td>${activity.duration || 'In session'}</td>
+                </tr>
+            `).join('');
+        }
+        
+        // ========== MANAGER FUNCTIONS ==========
+        function openAddDrugModal() {
+            if (currentUser.role !== 'manager' && currentUser.role !== 'admin') {
+                alert('Only managers can add drugs');
+                return;
+            }
+            
+            const drugName = prompt('Enter drug brand name:');
+            if (!drugName) return;
+            const genericName = prompt('Enter generic name:');
+            const price = parseFloat(prompt('Enter selling price (KES):'));
+            const stock = parseInt(prompt('Enter initial stock quantity:'));
+            const expiry = prompt('Enter expiry date (YYYY-MM-DD):');
+            
+            if (drugName && price && stock) {
+                const newDrug = {
+                    id: Date.now(),
+                    brand_name: drugName,
+                    generic_name: genericName || drugName,
+                    category: 'General',
+                    price: price,
+                    stock: stock,
+                    expiry: expiry || '2026-12-31'
+                };
+                drugs.push(newDrug);
+                saveDrugs();
+                refreshAllData();
+                alert(`✅ Drug "${drugName}" added successfully!`);
+            }
+        }
+        
+        function openAddStockModal(drugId) {
+            const drug = drugs.find(d => d.id === drugId);
+            const quantity = prompt(`Add stock for ${drug.brand_name}\nCurrent stock: ${drug.stock}\nEnter quantity to add:`);
+            if (quantity && !isNaN(quantity) && parseInt(quantity) > 0) {
+                drug.stock += parseInt(quantity);
+                saveDrugs();
+                refreshAllData();
+                alert(`Added ${quantity} units to ${drug.brand_name}. New stock: ${drug.stock}`);
+            }
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            if (modalId === 'patientModal') {
+                prescriptionFields = [];
+                renderPrescriptionFields();
+            }
+        }
+        
+        function openPatientModal() {
+            document.getElementById('patientModal').classList.add('active');
+            prescriptionFields = [];
+            renderPrescriptionFields();
+        }
+        
+        function refreshAllData() {
+            refreshDashboard();
+            refreshInventory();
+            refreshPatients();
+            refreshAdmissions();
+            refreshSales();
+            refreshActivities();
+            displayDrugs(drugs);
+        }
+        
+        function startAutoRefresh() {
+            setInterval(() => {
+                if (currentUser) {
+                    refreshAllData();
+                }
+            }, 30000);
+        }
+        
+        // Initialize
+        loadData();
+        displayDrugs(drugs);
+    </script>
+</body>
+</html>
